@@ -32,7 +32,7 @@ function CoffeeDisplayAll(props) {
         </Modal>
       </div>
       </div>
-      <div class="showAllCoffee">
+      <div className="showAllCoffee">
       {props.coffees.length > 0 && (
         props.coffees.map(coffee => (
           <CoffeeDisplayEach key={coffee.id} coffee={coffee} getCoffee={props.getCoffee}/>

@@ -5,9 +5,10 @@ import CartDeleteAll from './CartDeleteAll.js';
 import CartProductQuantity from './CartProductQuantity.js';
 import './index.css';
 
-function Cart({ onCartLength}) {
+function Cart({ onCartLength, setProductIdsInCart}) {
     const [loading, setLoading] = useState(true);
     const [cart, setCart] = useState([]);
+    
     
     const totalPrice = cart.reduce((total, product) => {
       return total + (product.price / 100) * product.quantity;
@@ -21,6 +22,10 @@ function Cart({ onCartLength}) {
             setCart(response);
             const total = response.reduce((acc, product) => acc + product.quantity, 0);
             onCartLength(total);
+
+            const ids = response.map(product => product.id);
+            setProductIdsInCart(ids);
+            
         })
         .catch((error) => console.log('Erreur lors du chargement des données: ', error));
     }
@@ -58,9 +63,14 @@ function Cart({ onCartLength}) {
             <div className="titlePage">
               <h1>Mon Panier{' '}</h1>
             </div>
+            {cart.length === 0 ? 
+              <div className='sousTitle'>Le panier est vide.</div>
+              :
+              ('')
+              }
               <div className="affPanier">
                 {cart.map(product => (
-                  <Col productId={product.id} md={4}>
+                  <Col key={product.id} md={4}>
                     <div className="productConteneurCart">
                       <img src={product.image} alt={product.name} className="imageShowCart"/>
                       <div className="card-body">
@@ -76,7 +86,7 @@ function Cart({ onCartLength}) {
                 ))}
               </div>
               {cart.length === 0 ? 
-              <div className='sousTitle'>Le panier est vide.</div>
+              ('')
               :
               <div className="totalCart">
                 <h2 style={{ marginRight: '20px' }} >Total: {totalPrice.toFixed(2)}$</h2>

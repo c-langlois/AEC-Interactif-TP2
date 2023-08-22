@@ -1,27 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import './wishlist.css';
-import { deleteProduct } from './wishlistDelete';
+//import { deleteProduct } from './wishlistDelete';
 import Category from './Category';
 
-function Wishlist() {
-    const [wishlistItems, setWishlistItems] = useState([]);
-
-    useEffect(() => {
-        fetch("https://insta-api-api.0vxq7h.easypanel.host/wishlist", {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json"
-            },
-        })
-        .then(response => response.json())
-        .then(wishlistData => {
-            //console.log("Éléments de la wishlist :", wishlistData);
-            setWishlistItems(wishlistData);
-        })
-        .catch(error => {
-            console.error('Erreur lors de la récupération de la wishlist:', error);
-        });
-    }, []);
+function Wishlist( { setWishlistItems, getWishlist, wishlistItems, } ) {
 
     function formatPrice(price) {
         const formattedPrice = (price / 100).toLocaleString("en-CA", {
@@ -43,10 +25,29 @@ function Wishlist() {
       .then(() => {
           // Mettre à jour la liste de souhaits pour qu'elle soit vide
           setWishlistItems([]);
+          getWishlist();
       })
       .catch(error => {
           console.error('Erreur lors de la suppression de tous les produits:', error);
       });
+  }
+
+  function deleteProduct(productId, wishlistItems, setWishlistItems) {
+    fetch(`https://insta-api-api.0vxq7h.easypanel.host/wishlist/delete-product/${productId}`, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json"
+        },
+    })
+    .then(response => response.json())
+    .then(() => {
+        const updatedWishlist = wishlistItems.filter(item => item.id !== productId);
+        setWishlistItems(updatedWishlist);
+        getWishlist();
+    })
+    .catch(error => {
+        console.error('Erreur lors de la suppression du produit:', error);
+    });
   }
 
     return (

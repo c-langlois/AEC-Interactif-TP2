@@ -6,9 +6,8 @@ import CartAdd from './CartAdd';
 import './index.css';
 
 function Products(props) {
-  const {id, name, price, image, category, updateCartLength, getSuggestions, promotions, productIdsInCart, productIdsInWishlist, wishlistItems, setWishlistItems, getWishlist} = props;
+  const {id, name, price, image, category, updateCartLength, getSuggestions, promotions, productIdsInCart, productIdsInWishlist} = props;
 
-  const [isInTheCart, setIsInTheCart] = useState(false);
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => {
@@ -17,16 +16,15 @@ function Products(props) {
 
   const currentProductPromotion = promotions.find(promotion => promotion.productId === id);
 
-  const discountedPrice = currentProductPromotion ? price - price * currentProductPromotion.discountPercent : price;
+  const discountedPrice = currentProductPromotion
+    ? price - price * currentProductPromotion.discountPercent
+    : price;
 
-  function isInCart() {
-    if (productIdsInCart.includes(id) || isInTheCart) {
-      return true;
-    } else {
-      return false;
+    function isInCart() {
+      return productIdsInCart.includes(id);
     }
-    //return productIdsInCart.includes(id);
-  }
+
+   
 
   return (
     <div className="productConteneur">
@@ -47,7 +45,7 @@ function Products(props) {
             )}
         </div>
         <div className="d-flex justify-content-between align-items-end">
-        <CartAdd setIsInTheCart={setIsInTheCart} productId={id} updateCartLength={updateCartLength} />
+        <CartAdd productId={id} updateCartLength={updateCartLength} />
           
           <div>
             <div>
@@ -55,7 +53,7 @@ function Products(props) {
               <Modal.Header closeButton>
                 <Modal.Title></Modal.Title>
               </Modal.Header>
-              <Modal.Body><ProductDetail id={id} price={price} getWishlist={getWishlist} discountedPrice={discountedPrice} getSuggestions={getSuggestions} wishlistItems={wishlistItems} productIdsInWishlist={productIdsInWishlist} setWishlistItems={setWishlistItems}/></Modal.Body>
+              <Modal.Body><ProductDetail id={id} getSuggestions={getSuggestions} productIdsInWishlist={productIdsInWishlist}/></Modal.Body>
               <Modal.Footer>
                 <Button variant="secondary" onClick={handleClose}>
                   Fermer

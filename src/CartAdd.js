@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import './index.css';
 
-function CartAdd({ productId, updateCartLength }) {
+function CartAdd({ setIsInTheCart, productId, updateCartLength }) {
   const [quantity, setQuantity] = useState(1);
+  const [wasAdded, setWasAdded] = useState(false);
 
   const handleIncrement = () => {
     setQuantity(quantity + 1);
@@ -16,6 +17,11 @@ function CartAdd({ productId, updateCartLength }) {
 
     const handleSubmit = (event) => {
         event.preventDefault();
+        setWasAdded(true);
+        setIsInTheCart(true);
+        setTimeout(() => {
+          setWasAdded(false);
+      }, 1000)
         const productData = {
             productId: productId,
             quantity: quantity
@@ -29,7 +35,6 @@ function CartAdd({ productId, updateCartLength }) {
         })
         .then(response => response.json())
         .then(() => {
-        
           updateCartLength((length) => length + quantity);
         })
         .catch((error) => console.log('Erreur lors de la création des données: ', error));
@@ -41,7 +46,7 @@ function CartAdd({ productId, updateCartLength }) {
               <p className="conteneurQte">{quantity}</p>
           <button className="btnIncrement" onClick={handleIncrement}><img className="img-button-plus-minus" src="/images/plus-solid.svg" alt="minus"/></button>
         </div>
-        <button className="bntIndex" onClick={handleSubmit}>Ajouter au panier</button>
+        <button className={wasAdded ? 'bntIndex cart-added' : 'bntIndex'} onClick={handleSubmit}>Ajouter au panier</button>
       </div>
     )
 }

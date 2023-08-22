@@ -4,6 +4,7 @@ function CoffeeAdd(props) {
     const [formName, setFormName] = useState('');
     const [formDescription, setFormDescription] = useState('');
     const [formUrl, setFormUrl] = useState('');
+    const [commentAdded, setCommentAdded] = useState(false);
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -22,8 +23,11 @@ function CoffeeAdd(props) {
         })
         .then(response => response.json())
         .then(() => {
-            props.handleClose();
             props.getCoffee();
+            setCommentAdded(true);
+            setTimeout(() => {
+                props.handleClose();
+            }, 1000);
         })
         .catch((error) => console.log('Erreur lors du chargement des données: ', error));
     }
@@ -41,6 +45,7 @@ function CoffeeAdd(props) {
                     <input type="url" name="url" onChange={(e) => setFormUrl(e.target.value)} required></input>
                 </div>
                 <input id="btnListWish" type="submit" value="Soumettre"/>
+                <div>{commentAdded && <p style={{display: 'flex', justifyContent: 'center', marginTop: '20px'}}>Café ajouté</p>} </div>
             </form>
         </div>
     )

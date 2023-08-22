@@ -21,7 +21,7 @@ function CoffeePage() {
 
     return (
         <>
-                    <div className="titlePage">
+            <div className="titlePage">
                 <h1>Nos cafés en présentation</h1>
             </div>
             <div className="coffee-page">

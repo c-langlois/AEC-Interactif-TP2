@@ -1,7 +1,7 @@
 import React from 'react';
 import './index.css';
 
-function Header({onPageChange, currentPage, cartLength }) {
+function Header({onPageChange, currentPage, cartLength}) {
   return (
     <header id="heading">
       <div className="navbar-brand d-flex align-items-center">
@@ -21,6 +21,9 @@ function Header({onPageChange, currentPage, cartLength }) {
         </button>
         <button className={`btnMenu ${currentPage === "cart" ? 'active' : ''}`} onClick={() => onPageChange("cart")} disabled={currentPage === "cart"}>
           Panier ({cartLength})
+        </button>
+        <button className={`btnMenu ${currentPage === "checkOut" ? 'active' : ''}`} onClick={() => onPageChange("checkOut")} disabled={currentPage === "checkOut"}>
+          Régler
         </button>
       </div>
     </header>

@@ -6,18 +6,19 @@ import './index.css';
 import RecentlyViewedList from './RecentlyViewedList';
 
 
-function ProductList({ updateCartLength }) {
+function ProductList({ setIsInTheCart, updateCartLength, promotions, productIdsInCart, productIdsInWishlist, wishlistItems, setWishlistItems, getWishlist}) {
   const [nothingFound, setNothingFound] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [products, setProducts] = useState([]);
   const [suggestions, setSuggestions] = useState([]);
+ 
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedColor, setSelectedColor] = useState('All');
   const [selectedPrice, setSelectedPrice] = useState('All');
   const [loading, setLoading] = useState(true);
 
-  function getProducts() {
+  const getProducts = () => {
       fetch("https://insta-api-api.0vxq7h.easypanel.host/products")
       .then(response => response.json())
       .then(response => {
@@ -41,6 +42,7 @@ function ProductList({ updateCartLength }) {
       getSuggestions();
   }, [])
 
+
   const filteredProducts = products.filter(product => {
 
     let categoryMatch = product.category?.name === selectedCategory;
@@ -61,7 +63,7 @@ function ProductList({ updateCartLength }) {
       priceMatch = product.price >= 1000 && product.price <= 9999;
     } else if (selectedPrice === "100+") {
       priceMatch = product.price >= 10000;
-    } 
+    }
 
     return categoryMatch && colorMatch && priceMatch;
   });
@@ -77,7 +79,15 @@ function ProductList({ updateCartLength }) {
 
     if (foundProducts.length === 0) {
       setNothingFound('La recherche n\'a rien trouvé.');
+    } else {
+      setNothingFound('');
     }
+  };
+
+  const handleClearSearch = () => {
+    setSearchTerm('');
+    setNothingFound('');
+    setSearchResults('');
   };
 
   return (
@@ -88,6 +98,7 @@ function ProductList({ updateCartLength }) {
       <div className="search-n-sort">
         <div className="menuSelector">
           <form className="search-form" onSubmit={handleSearch}>
+          <div className="search-container">
             <input
               className="inputStyle"
               name="search"
@@ -95,6 +106,12 @@ function ProductList({ updateCartLength }) {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
+              {searchTerm && (
+                <button className="clear-button" onClick={handleClearSearch}>
+                  <img style={{width: '15px'}} src="./icons/trash-can-solid.svg" alt="Poubelle" />
+                </button>
+              )}
+            </div>
             <button className="resetButton" type="submit">Recherche</button>
           </form>
         </div>
@@ -124,6 +141,7 @@ function ProductList({ updateCartLength }) {
         </div>
       </div>
       <div className="search-result-empty">{nothingFound}</div>
+      <div className="search-result-empty">{filteredProducts.length === 0 ? ( 'Aucun produit ne correspond à vos critère de filtrage.' ) : ( '' )}</div>
       <div id="shopConteneur">
         {loading ? 
           <div>
@@ -152,7 +170,15 @@ function ProductList({ updateCartLength }) {
                 category={product.category?.name}
                 color={product.color.name}
                 updateCartLength={updateCartLength}
-                getSuggestions={getSuggestions} 
+                getSuggestions={getSuggestions}
+                promotions={promotions} 
+                productIdsInCart={productIdsInCart}
+                productIdsInWishlist={productIdsInWishlist}
+                setWishlistItems={setWishlistItems}
+                wishlistItems={wishlistItems}
+                getWishlist={getWishlist}
+                setIsInTheCart={setIsInTheCart}
+                
               />
             )) : 
             searchResults.map((product) => (
@@ -166,7 +192,13 @@ function ProductList({ updateCartLength }) {
                 category={product.category?.name}
                 color={product.color.name}
                 updateCartLength={updateCartLength}
-                getSuggestions={getSuggestions} 
+                getSuggestions={getSuggestions}
+                promotions={promotions}
+                productIdsInCart={productIdsInCart}
+                productIdsInWishlist={productIdsInWishlist}
+                setWishlistItems={setWishlistItems}
+                getWishlist={getWishlist}
+                setIsInTheCart={setIsInTheCart}
               />
             ))
           }
